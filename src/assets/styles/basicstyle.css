@@ -1,0 +1,70 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap');
+
+.search-bar,
+.search-button,
+.grid-button {
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.25);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo {
+    margin-bottom: 30px;
+    width: 500px;
+    height: 100px;
+}
+
+.content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.search-container {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.search-bar {
+    width: 490px;
+    height: 40px;
+    border-radius: 10px;
+    border-color: black;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.search-button {
+    width: 100px;
+    height: 40px;
+    background-color: #2D93FF;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.grid-button {
+    width: 200px;
+    height: 150px;
+    background-color: #2D93FF;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    border-radius: 20px;
+    font-weight: bold;
+}

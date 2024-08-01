@@ -1,0 +1,104 @@
+<template>
+    <button class="back-button" @click="goBack">🡠</button>
+    <div class="container">
+        <LogoComponent/>
+        <div class="content">
+            <div class="button-grid">
+                <button class="grid-button" v-for="(buttonName, index) in buttonNames" :key="index"
+                    @click="navigate(buttonName)">{{ buttonName }}</button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import LogoComponent from '../components/LogoComponent.vue'
+export default {
+    components: {
+        LogoComponent
+    },
+    name: 'CadastrarView',
+    data() {
+        return {
+            buttonNames: ['AUTOR', 'CATEGORIA', 'LIVRO', 'EDITORA', 'USUARIO', 'ESTANTE']
+        };
+    },
+    methods: {
+        navigate(buttonName) {
+            if (buttonName === 'USUARIO') {
+                this.$router.push({ name: 'CadastrarUsuario' });
+            }
+            if (buttonName === 'AUTOR') {
+                this.$router.push({ name: 'CadastrarAutor' });
+            }
+            if (buttonName === 'CATEGORIA') {
+                this.$router.push({ name: 'CadastrarCategoria' });
+            }
+            if (buttonName === 'LIVRO') {
+                this.$router.push({ name: 'CadastrarLivro' });
+            }
+            if (buttonName === 'EDITORA') {
+                this.$router.push({ name: 'CadastrarEditora' });
+            }
+        },
+        goBack() {
+            this.$router.go(-1);
+        }
+    }
+}
+</script>
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap');
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+.back-button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 10px;
+    width: 30px; 
+    height: 30px; 
+    background-color: #2D93FF;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    border-radius: 10px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.grid-button {
+    width: 200px;
+    height: 150px;
+    background-color: #2D93FF;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.logo {
+    margin-bottom: 30px;
+    width: 500px;
+    height: 100px;
+}</style>
