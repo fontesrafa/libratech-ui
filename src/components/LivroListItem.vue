@@ -26,8 +26,12 @@
       <p>Disponiveis: {{ disponiveis }}</p>
     </div>
     <div class="buttons">
-      <button class="grid-button" v-if="canEmprestar">Emprestar</button>
-      <button class="grid-button" v-if="canDevolver">Devolver</button>
+      <router-link :to="{ name: 'livro-detalhes', params: { id: id } }" v-if="id">
+        <button class="grid-button" v-if="canEmprestar">Emprestar</button>
+      </router-link>
+      <router-link :to="{ name: 'livro-detalhes', params: { id: id } }" v-if="id">
+        <button class="grid-button" v-if="canDevolver">Devolver</button>
+      </router-link>
       <router-link :to="{ name: 'livro-detalhes', params: { id: id } }" v-if="id">
         <button class="grid-button">Detalhes</button>
       </router-link>
