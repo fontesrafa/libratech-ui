@@ -1,25 +1,22 @@
 <template>
     <div class="container">
-        <LogoComponent />
+        <img src="@/assets/logo_libratech.png" alt="Logo" class="logo" @click="goHome">
+
         <BarraPesquisa :query="query" :pesquisar="pesquisar" :buttonNames="buttonNames"
             :navegarParaCadastro="navegarParaCadastro" />
         <div class="button-grid">
             <button class="grid-button" v-for="(buttonName, index) in buttonNames" :key="index"
-                @click="buttonName === 'CADASTRAR' ? navegarParaCadastro() : null">{{ buttonName }}</button>
+                @click="navigate(buttonName)">{{ buttonName }}
+            </button>
         </div>
     </div>
-
-
 </template>
-
 <script>
 import BarraPesquisa from '../components/BarraPesquisa.vue'
-import LogoComponent from '../components/LogoComponent.vue'
 export default {
     name: 'HomeView',
     components: {
         BarraPesquisa,
-        LogoComponent
     },
     data() {
         return {
@@ -30,8 +27,16 @@ export default {
         pesquisar() {
             this.$router.push({ name: 'livro-search', query: { query: this.query } });
         },
-        navegarParaCadastro() {
-            this.$router.push({ name: 'Cadastrar' });
+        navigate(buttonName) {
+            if (buttonName === 'CADASTRAR') {
+                this.$router.push({ name: 'Cadastrar' });
+            }
+            if (buttonName === 'GERENCIAR') {
+                this.$router.push({ name: 'Gerenciar' });
+            }
+            if (buttonName === 'EMPRESTAR RESERVAR') {
+                this.$router.push({ name: 'livro-search', query: { query: '' } });
+            }
         },
         goHome() {
             this.$router.push({ name: 'home' });
@@ -39,16 +44,13 @@ export default {
     }
 }
 </script>
-
 <style scoped>
 @import '@/assets/styles/basicstyle.css';
-
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-
 .button-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

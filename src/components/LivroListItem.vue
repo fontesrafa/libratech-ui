@@ -1,111 +1,107 @@
 <template>
-    <div class="livro-item">
-      <img
-        class="livro-imagem"
-        :src="typeof imagemURL === 'string' ? imagemURL : 'default-image-url.jpg'"
-        alt="Imagem do Livro"
-      />
-      <div class="content">
-        <div class="titulo-autores-div">
-          <div class="titulo-container">{{ titulo }}</div>
-          <div class="livro-autores-div">
-            <div class="livro-autor" v-for="autor in autores" :key="autor.id">
-              {{ autor.nome }}
-              <span v-if="!$last">&nbsp;</span>
-            </div>
-          </div>
-        </div>
-        <div class="space">
-
-        </div>
-        <div class="categorias-div">
-          <div v-for="categoria in categorias" :key="categoria.id">
-            {{ categoria.nome }}
-            <span>&nbsp;</span>
+  <div class="livro-item">
+    <img class="livro-imagem" :src="typeof imagemURL === 'string' ? imagemURL : 'default-image-url.jpg'"
+      alt="Imagem do Livro" />
+    <div class="content">
+      <div class="titulo-autores-div">
+        <div class="titulo-container">{{ titulo }}</div>
+        <div class="livro-autores-div">
+          <div class="livro-autor" v-for="autor in autores" :key="autor.id">
+            {{ autor.nome }}
+            <span v-if="!$last">&nbsp;</span>
           </div>
         </div>
       </div>
-      <div class="exemplares">
-        <p>Exemplares: {{ quantidade }} unidades</p>
-        <p>Disponiveis: {{ disponiveis }} unidades</p>
+      <div class="space">
       </div>
-      <div class="buttons">
-        <button class="grid-button">Emprestar</button>
-        <button class="grid-button">Devolver</button>
-        <router-link :to="{ name: 'livro-detalhes', params: { id: id } }" v-if="id">
-          <button class="grid-button">Detalhes</button>
-        </router-link>
+      <div class="categorias-div">
+        <div v-for="categoria in categorias" :key="categoria.id">
+          {{ categoria.nome }}
+          <span>&nbsp;</span>
+        </div>
       </div>
     </div>
-  </template>
-  
-  <script>
-  import { RouterLink } from "vue-router";
-  import ExemplarModel from "@/models/ExemplarModel";
-  
-  export default {
-    name: "LivroItem",
-    data() {
-      return {
-        disponiveis: 0,
-        exemplaresAtuais: [],
-      };
+    <div class="exemplares">
+      <p>Exemplares: {{ exemplaresAtuais.length }}</p>
+      <p>Disponiveis: {{ disponiveis }}</p>
+    </div>
+    <div class="buttons">
+      <button class="grid-button" v-if="canEmprestar">Emprestar</button>
+      <button class="grid-button" v-if="canDevolver">Devolver</button>
+      <router-link :to="{ name: 'livro-detalhes', params: { id: id } }" v-if="id">
+        <button class="grid-button">Detalhes</button>
+      </router-link>
+    </div>
+  </div>
+</template>
+
+<script>
+import { RouterLink } from "vue-router";
+import ExemplarModel from "@/models/ExemplarModel";
+
+export default {
+  name: "LivroItem",
+  data() {
+    return {
+      disponiveis: 0,
+      exemplaresAtuais: [],
+    };
+  },
+  components: {
+    "router-link": RouterLink,
+  },
+  props: {
+    id: {
+      type: Number,
+      required: true,
     },
-    components: {
-      "router-link": RouterLink,
+    titulo: {
+      type: String,
+      required: true,
     },
-    props: {
-      id: {
-        type: Number,
-        required: true,
-      },
-      titulo: {
-        type: String,
-        required: true,
-      },
-      quantidade: {
-        type: Number,
-        required: false,
-      },
-      autores: {
-        type: Object,
-        default: () => {[]},
-      },
-      categorias: {
-        type: Object,
-        default: () => {[]},
-      },
-      descricao: {
-        type: String,
-        required: false,
-      },
-      assunto: {
-        type: String,
-        required: false,
-      },
-      editora: {
-        type: String,
-        default: null,
-      },
-      edicoes: {
-        type: Array,
-        default: () => [],
-      },
-      imagemURL: {
-        type: String,
-        required: false,
-      },
-      exemplares: {
-        type: Object,
-        default: () => {[]},
-      },
+    quantidade: {
+      type: Number,
+      required: false,
     },
-    async created() {
-      await this.searchByLivroId(this.id);
-      this.atualizarDisponiveis();
+    autores: {
+      type: Object,
+      default: () => { [] },
     },
-    methods: {
-      
+    categorias: {
+      type: Object,
+      default: () => { [] },
+    },
+    descricao: {
+      type: String,
+      required: false,
+    },
+    assunto: {
+      type: String,
+      required: false,
+    },
+    editora: {
+      type: String,
+      default: null,
+    },
+    edicoes: {
+      type: Array,
+      default: () => [],
+    },
+    imagemURL: {
+      type: String,
+      required: false,
+    },
+    exemplares: {
+      type: Object,
+      default: () => { [] },
+    },
+  },
+  async created() {
+    await this.searchByLivroId(this.id);
+    this.atualizarDisponiveis();
+  },
+  methods: {
+
     async searchByLivroId(id) {
       try {
         const response = await new ExemplarModel().searchByLivroId(id);
@@ -122,146 +118,167 @@
       this.disponiveis = this.quantidadeDisponiveis;
       console.log('Disponiveis:', this.disponiveis);
     },
-    },
-    computed: {
-        quantidadeDisponiveis() {
-        if (this.exemplaresAtuais && this.exemplaresAtuais.length > 0) {
-          return this.exemplaresAtuais.filter(exemplar => 
-            !exemplar.reservas.some(reserva => reserva.statusDescricao === "EM_ABERTO") &&
-            !exemplar.emprestimos.some(emprestimo => emprestimo.statusDescricao === "EM_ANDAMENTO")
-          ).length;
-        }
-        return 0;
+  },
+  computed: {
+    quantidadeDisponiveis() {
+      if (this.exemplaresAtuais && this.exemplaresAtuais.length > 0) {
+        return this.exemplaresAtuais.filter(exemplar =>
+          !exemplar.reservas.some(reserva => reserva.statusDescricao === "EM_ABERTO") &&
+          !exemplar.emprestimos.some(emprestimo => emprestimo.statusDescricao === "EM_ANDAMENTO")
+        ).length;
       }
+      return 0;
     },
-  };
-  </script>
-  
-  <style scoped>
-  .livro-item {
-    border: 1px solid #ffffff;
-    padding: 5px;
-    border-radius: 10px;
-    background-color: #eaf4ff;
-    max-width: 3000px;
-    width: 100%;
-    font-weight: bold;
-    text-decoration: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    font-family: "Open Sans", sans-serif;
-    box-sizing: border-box;
-    margin-bottom: 20px;
-  }
-  
-  .info-buttons {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-right: 10px;
-    padding: 5px;
-  }
-  
-  .grid-button {
-    width: 100px;
-    height: 30px;
-    background-color: #2d93ff;
-    color: white;
-    font-family: "Open Sans", sans-serif;
-    font-size: 12px;
-    border-radius: 10px;
-    font-weight: 600;
-    text-align: center;
-  }
-  
-  .livro-imagem {
-    max-width: 70px;
-    max-height: 100px;
-    object-fit: cover;
-    border-radius: 2px;
-    padding: 8px;
-  }
-  
-  .content {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: start;
-    background-color: transparent;
-    flex-direction: column;
-  }
-  
-  .titulo-container {
-    background-color: transparent;
-    font-family: "Open Sans", sans-serif;
-    font-size: 14px;
-    margin-bottom: none;
-    color: black;
-  }
-  
-  .categorias {
-    display: flex;
-    gap: 10px;
-    margin-top: 5px;
-  }
-  
-  .categoria-link {
-    color: #2d93ff;
-    text-decoration: none;
-    font-size: 14px;
-  }
-  
-  .livro-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 10px;
-    flex-grow: 1;
-  }
-  
-  .livro-autores-div {
-    display: flex;
-    flex-direction: row;
-    font-size: 10px;
-    font-weight: medium;
-    color: #8e8e93;
-    height: auto;
-  }
-  
-  .categorias-div {
-    display: flex;
-    flex-direction: row;
-    color: #006ce5;
-    font-size: 10px;
-    font-weight: lighter;
-  }
-  
-  .titulo-autores-div {
-    display: flex;
-    flex-direction: column;
-    align-content: start;
-  }
-  
-  .exemplares {
-    display: flex;
-    flex-direction: column;
-    align-items: self-start;
-    justify-content: center;
-    font-size: 10px;
-    color: black;
-  }
+    quantidadeEmprestados() {
+      if (this.exemplaresAtuais && this.exemplaresAtuais.length > 0) {
+        return this.exemplaresAtuais.filter(exemplar =>
+          exemplar.emprestimos.some(emprestimo => emprestimo.statusDescricao === "EM_ANDAMENTO")
+        ).length;
+      }
+      return 0;
+    },
+    quantidadeReservados() {
+      if (this.exemplaresAtuais && this.exemplaresAtuais.length > 0) {
+        return this.exemplaresAtuais.filter(exemplar =>
+          exemplar.reservas.some(reserva => reserva.statusDescricao === "EM_ABERTO")
+        ).length;
+      }
+      return 0;
+    },
+    canEmprestar() {
+      return this.quantidade !== this.quantidadeEmprestados;
+    },
+    canDevolver() {
+      return this.quantidadeEmprestados > 0;
+    }
+  },
+};
+</script>
 
-  .space {
-    flex-grow: 1;
-    height: 60px;
-  }
-  </style>
-  
+<style scoped>
+.livro-item {
+  border: 1px solid #ffffff;
+  padding: 5px;
+  border-radius: 10px;
+  background-color: #eaf4ff;
+  max-width: 3000px;
+  width: 100%;
+  font-weight: bold;
+  text-decoration: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-family: "Open Sans", sans-serif;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+}
+
+.info-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-right: 10px;
+  padding: 5px;
+}
+
+.grid-button {
+  width: 100px;
+  height: 30px;
+  background-color: #2d93ff;
+  color: white;
+  font-family: "Open Sans", sans-serif;
+  font-size: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.livro-imagem {
+  max-width: 70px;
+  max-height: 100px;
+  object-fit: cover;
+  border-radius: 2px;
+  padding: 8px;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  background-color: transparent;
+  flex-direction: column;
+}
+
+.titulo-container {
+  background-color: transparent;
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+  margin-bottom: none;
+  color: black;
+}
+
+.categorias {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.categoria-link {
+  color: #2d93ff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.livro-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+  flex-grow: 1;
+}
+
+.livro-autores-div {
+  display: flex;
+  flex-direction: row;
+  font-size: 10px;
+  font-weight: medium;
+  color: #8e8e93;
+  height: auto;
+}
+
+.categorias-div {
+  display: flex;
+  flex-direction: row;
+  color: #006ce5;
+  font-size: 10px;
+  font-weight: lighter;
+}
+
+.titulo-autores-div {
+  display: flex;
+  flex-direction: column;
+  align-content: start;
+}
+
+.exemplares {
+  display: flex;
+  flex-direction: column;
+  align-items: self-start;
+  justify-content: center;
+  font-size: 10px;
+  color: black;
+}
+
+.space {
+  flex-grow: 1;
+  height: 60px;
+}
+</style>

@@ -47,11 +47,11 @@ export default class EditoraModel extends Model {
             data
         });
     }
-    async update(data) {
+    async update(id, data) {
         const token = localStorage.getItem('jwt');
         return await this.request({
             method: 'put',
-            url: `${this.resource()}`,
+            url: `${this.resource()}/${id}`,
             headers: {
                 'Authorization': `Bearer ${token}`
             },

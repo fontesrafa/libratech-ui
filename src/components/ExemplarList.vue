@@ -1,20 +1,11 @@
 <template>
     <div class="content">
-        <ExemplarListItem
-            v-for="exemplar in exemplares"
-            :key="exemplar.id"
-            :id="exemplar.id"
-            :livro="exemplar.livro"
-            :estante="exemplar.estante"
-            :disponibilidade="exemplar.disponibilidade"
-            :situacaoDescricao="exemplar.situacaoDescricao"
-            :reservas="exemplar.reservas"
-            :statusReserva="exemplar.statusReserva"
-            :emprestimos="exemplar.emprestimos"
-            :statusEmprestimo="exemplar.statusEmprestimo"
-            @action-completed="refreshExemplares"
-            @exemplares-atualizados="atualizarDisponiveis" 
-        />
+        <ExemplarListItem v-for="exemplar in exemplares" :key="exemplar.id" :id="exemplar.id" :livro="exemplar.livro"
+            :estante="exemplar.estante" :disponibilidade="exemplar.disponibilidade"
+            :situacaoDescricao="exemplar.situacaoDescricao" :reservas="exemplar.reservas"
+            :statusReserva="exemplar.statusReserva" :emprestimos="exemplar.emprestimos"
+            :statusEmprestimo="exemplar.statusEmprestimo" @action-completed="refreshExemplares"
+            @exemplares-atualizados="atualizarDisponiveis" />
     </div>
 </template>
 
@@ -29,7 +20,7 @@ export default {
     props: {
         livroId: {
             type: Number,
-            required: true,
+            required: false,
         },
     },
     data() {
@@ -46,10 +37,16 @@ export default {
         async refreshExemplares() {
             try {
                 console.log('Refreshing exemplares...');
-                const response = await new ExemplarModel().searchByLivroId(this.livroId);
-                this.exemplares = response.data;
-                console.log('Exemplares recarregados:', this.exemplares);
-                this.$emit('exemplares-atualizados');
+                if (!this.livroId) {
+                    const response = await new ExemplarModel().all();
+                    this.exemplares = response.data;
+                } else {
+                    const response = await new ExemplarModel().searchByLivroId(this.livroId);
+                    this.exemplares = response.data;
+
+                    console.log('Exemplares recarregados:', this.exemplares);
+                    this.$emit('exemplares-atualizados');
+                }
             } catch (error) {
                 console.error('Error refreshing exemplares:', error);
             }
@@ -72,6 +69,7 @@ export default {
     align-content: start;
     width: 100%;
 }
+
 .exemplar-item {
     width: 95%;
     margin: 5px;

@@ -33,15 +33,16 @@ export default class LivroModel extends Model {
       data
     });
   }
-  async update(data) {
+  async update(id, data) {
     const token = localStorage.getItem('jwt');
     return await this.request({
       method: 'put',
-      url: `${this.resource()}`,
+      url: `${this.resource()}/${id}`,
       headers: {
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
       },
-      data
+      data//: JSON.stringify(data) // Converte os dados para JSON
     });
   }
   async delete(id) {

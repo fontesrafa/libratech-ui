@@ -1,64 +1,80 @@
 <template>
     <div class="container">
-        <LogoComponent/>
         <div class="content">
-            <h1>Cadastro de Categoria</h1>
-            <form @submit.prevent="cadastrarCategoria" class="form-container">
+            <h1>Editar Categoria</h1>
+            <form @submit.prevent="atualizarCategoria" class="form-container">
                 <div class="input-container top-aligned">
-                    <label for="nome">Nome: </label>
-                    <input type="text" id="nome" v-model="categoria.nome" required class="input-field">
+                    <label for="nome">Nome:</label>
+                    <input v-model="categoria.nome" id="nome" required class="input-field" />
                 </div>
                 <div class="input-container top-aligned">
-                    <label for="descricao">Descrição: </label>
-                    <textarea id="descricao" v-model="categoria.descricao" required class="input-field-bio"></textarea>
+                    <label for="descricao">Descrição:</label>
+                    <textarea v-model="categoria.descricao" id="descricao" required class="input-field-bio"></textarea>
                 </div>
-                <button type="submit" class="submit-button">Cadastrar</button>
+                <button type="submit" class="submit-button">Salvar</button>
             </form>
         </div>
     </div>
 </template>
-  
+
 <script>
 import CategoriaModel from '@/models/CategoriaModel';
-import LogoComponent from '@/components/LogoComponent.vue';
-
 export default {
-    components: {
-        LogoComponent
-    },
-    name: 'CadastrarCategoriaView',
+    name: 'EditarCategoriaView',
     data() {
         return {
             categoria: {
+                id: '',
                 nome: '',
                 descricao: ''
             }
         };
     },
+    created() {
+        this.buscarCategoria();
+    },
     methods: {
-        async cadastrarCategoria() {
+        async buscarCategoria() {
             try {
-                var resposta = await new CategoriaModel().create(this.categoria);
-                if (resposta.status === 201) {
-                    alert('Categoria cadastrada com sucesso!');
-                    this.resetForm();
+                const id = this.$route.params.id;
+                const resposta = await new CategoriaModel().find(id);
+                this.categoria = resposta.data;
+            } catch (error) {
+                console.error(error);
+                alert('Erro ao buscar categoria.');
+            }
+        },
+        async atualizarCategoria() {
+            console.log('Atualizando categoria...');
+            try {
+                console.log('Teste Categoria:');
+                const id = this.$route.params.id;
+                const data = {
+                    id: this.categoria.id,
+                    nome: this.categoria.nome,
+                    descricao: this.categoria.descricao
+                };
+                console.log(data);
+                const resposta = await new CategoriaModel().update(id, data);
+                console.log(resposta);
+                if (resposta.status === 204) {
+                    alert('Categoria atualizada com sucesso!');
+                    this.goBack();
+                } else {
+                    alert('Erro ao atualizar Categoria. Por favor, tente novamente mais tarde.');
                 }
             } catch (error) {
                 console.error(error);
-                alert('Ocorreu um erro durante o cadastro. Por favor, tente novamente mais tarde.');
+                alert('Ocorreu um error durante a atualização. Por favor, tente novamente mais tarde.');
             }
         },
         goBack() {
             this.$router.go(-1);
-        },
-        resetForm() {
-            this.categoria.nome = '';
-            this.categoria.descricao = '';
         }
     }
 };
 </script>
-  
+
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap');
 
@@ -67,11 +83,13 @@ export default {
     flex-direction: column;
     align-items: center;
 }
+
 .top-aligned {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
+
 .content {
     flex-grow: 1;
     display: flex;
@@ -90,6 +108,7 @@ export default {
     border-color: black;
     font-family: 'Open Sans', sans-serif;
 }
+
 .input-field-bio {
     width: 490px;
     height: 400px;
@@ -108,18 +127,14 @@ export default {
     border-radius: 10px;
     font-weight: bold;
 }
-.logo {
-    margin-bottom: 30px;
-    width: 500px;
-    height: 100px;
-}
+
 .back-button {
     position: absolute;
     top: 0;
     left: 0;
     margin: 10px;
-    width: 30px; 
-    height: 30px; 
+    width: 30px;
+    height: 30px;
     background-color: #2D93FF;
     color: white;
     font-family: 'Open Sans', sans-serif;

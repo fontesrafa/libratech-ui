@@ -15,10 +15,6 @@ export default {
             type: String,
             required: true
         },
-        buttonNames: {
-            type: Array,
-            required: true
-        },
         navegarParaCadastro: {
             type: Function,
             required: true
@@ -34,7 +30,7 @@ export default {
     },
     methods: {
         pesquisar() {
-            this.$router.push({ name: 'livro-search', query: { query: this.queryExe } }).then(() => {
+            this.$router.push({ name: 'livro-search', query: { query: this.queryExe.trim() } }).then(() => {
                 this.$router.go(0);
             });
         },

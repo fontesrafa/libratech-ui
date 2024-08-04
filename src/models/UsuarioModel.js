@@ -43,4 +43,26 @@ export default class UsuarioModel extends Model {
       }
     });
   }
+
+  async getAll() {
+    const token = localStorage.getItem('jwt');
+    return await this.request({
+      method: 'get',
+      url: this.resource(),
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+  async logout() {
+    const token = localStorage.getItem('jwt');
+    return await this.request({
+      method: 'post',
+      url: `${this.resource()}/logout`,
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
 }

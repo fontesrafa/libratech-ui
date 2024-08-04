@@ -1,12 +1,18 @@
 <template>
   <main>
+    <HeaderComponent />
     <RouterView />
   </main>
 </template>
 
 <script setup>
-import { RouterView } from "vue-router"
+import HeaderComponent from './components/HeaderComponent.vue';
+
+
 </script>
+components: {
+  HeaderComponent
+}
   
 <style>
 #app {
@@ -15,7 +21,6 @@ import { RouterView } from "vue-router"
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #004182;
-  margin-top: 60px;
-
+  margin-top: 0px;
 }
 </style>

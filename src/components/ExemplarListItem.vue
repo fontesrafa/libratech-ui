@@ -38,9 +38,11 @@
                 <div class="reservar-buttons">
                     <button class="grid-button" v-if="mostrarBotaoReservar"
                         @click="abrirJanela('reservar', 'Deseja reservar este item? \n Digite a matrícula do solicitante:')">Reservar</button>
+
                     <button class="grid-button" v-if="mostrarBotaoCancelarReserva"
                         @click="abrirJanela('cancelarReserva', 'Deseja cancelar a reserva deste item?')">Canc.
                         Reserva</button>
+                    <button class="grid-button-invisible" v-if="mostrarBotaoEmprestar">______________</button>
                 </div>
 
                 <div class="emprestar-buttons">
@@ -136,7 +138,7 @@ export default {
             return this.emprestimos.filter(emprestimo => emprestimo.statusDescricao === "EM_ANDAMENTO");
         },
         mostrarBotaoReservar() {
-            return this.reservasEmAberto.length == 0;
+            return this.reservasEmAberto.length == 0 && this.emprestimoEmAndamento.length > 0;
         },
         mostrarBotaoDevolver() {
             return this.emprestimoEmAndamento.length > 0;
@@ -148,7 +150,7 @@ export default {
             return this.emprestimoEmAndamento.length == 0;
         },
         mostrarBotaoRenovar() {
-            return this.emprestimoEmAndamento.length > 0;
+            return this.emprestimoEmAndamento.length > 0 && this.reservasEmAberto.length == 0;
         },
         dataEmprestimoFormatada() {
             if (this.emprestimoEmAndamento.length > 0) {
@@ -236,6 +238,9 @@ export default {
                     ExemplarId: this.id
                 };
                 const response = await reservaModel.create(reservaData);
+                if (response.status === 201) {
+                    alert('Reserva do exemplar realizada com sucesso para o usuário de matrícula: ' + reservaData.usuarioId);
+                }
                 console.log('Reserva criada:', response.data);
             } catch (error) {
                 console.error('Erro ao criar reserva:', error);
@@ -248,6 +253,7 @@ export default {
                 if (reservaEmAberto) {
                     const response = await reservaModel.cancelar(reservaEmAberto.id);
                     console.log('Reserva cancelada:', response.data);
+                    alert('Reserva cancelada com sucesso.');
                 } else {
                     console.log('Nenhuma reserva em aberto para cancelar.');
                 }
@@ -286,7 +292,8 @@ export default {
                         console.log('Usuario local diferente do usuario reserva');
                         console.log('Usuário local:', this.usuarioLocal.id);
                         console.log('Usuario Reserva:', usuarioReserva)
-                        alert('Este livro está reservado para outro usuário.');
+                        alert('Você tentou emprestar este livro para o usuário de matrícula: ' + this.usuarioLocal.id +
+                            '\nPorém, o livro está reservado para o usuário de matrícula: ' + usuarioReserva);
                         return;
                     } else {
                         console.log('Usuário local igual ao usuário reserva');
@@ -302,6 +309,7 @@ export default {
                 };
                 const response = await emprestimoModel.create(emprestimoData);
                 console.log('Empréstimo realizado:', response.data);
+                alert('Empréstimo realizado com sucesso para o usuário de matrícula: ' + usuario);
             } catch (error) {
                 console.error('Erro ao realizar empréstimo:', error);
             }
@@ -312,6 +320,7 @@ export default {
                 const emprestimoEmAndamento = this.emprestimoEmAndamento[0];
                 if (emprestimoEmAndamento) {
                     const response = await emprestimoModel.finalizar(emprestimoEmAndamento.id);
+                    alert('Devolução realizada. Empréstimo finalizado com sucesso.');
                     console.log('Empréstimo finalizado:', response.data);
                 } else {
                     console.log('Nenhum empréstimo em andamento para finalizar.');
@@ -324,6 +333,7 @@ export default {
             const emprestimo = this.emprestimoEmAndamento[0];
             const emprestimoModel = new EmprestimoModel();
             await emprestimoModel.renovar(emprestimo.id);
+            alert('Empréstimo renovado com sucesso. Atente à nova data de devolução.');
         },
         cancelar() {
             this.isModalVisible = false;
@@ -334,10 +344,10 @@ export default {
 
 <style scoped>
 .exemplar-item {
-    border: 1px solid #ffffff;
+    border: 1px solid rgba(45, 147, 255, 0.1);
     padding: 5px;
     border-radius: 10px;
-    background-color: #ffffff;
+    background-color: #ffffff;/*rgba(45, 147, 255, 0.1);*/
     max-width: 3000px;
     width: 100%;
     font-weight: bold;
@@ -372,6 +382,7 @@ export default {
     margin-right: 10px;
     padding: 5px;
 }
+
 .buttons {
     display: flex;
     flex-direction: row;
@@ -402,6 +413,18 @@ export default {
     border-radius: 10px;
     font-weight: 600;
     text-align: center;
+}
+
+.grid-button-invisible {
+    width: 100px;
+    height: 0px;
+    background-color: transparent;
+    color: transparent;
+    font-family: "Open Sans", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    visibility: hidden;
 }
 
 .exemplar-imagem {

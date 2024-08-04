@@ -32,11 +32,15 @@ export default {
   },
   methods: {
     async login() {
+      if (!this.isValidEmail(this.credentials.email)) {
+        alert('Por favor, insira um email válido.');
+        return;
+      }
       try {
         const response = await new UsuarioModel().login(this.credentials);
         const token = response.data.token;
         localStorage.setItem('jwt', token);
-        this.$router.push({ name: 'home' })
+        this.$router.push({ name: 'home' });
       } catch (error) {
         console.error(error);
         if (error.response && error.response.status === 401) {
@@ -45,6 +49,10 @@ export default {
           alert('Ocorreu um erro durante o login. Por favor, tente novamente mais tarde.');
         }
       }
+    },
+    isValidEmail(email) {
+      const re = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+      return re.test(email);
     }
   }
 };

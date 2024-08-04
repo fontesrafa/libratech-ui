@@ -2,58 +2,78 @@
     <div class="container">
         <LogoComponent/>
         <div class="content">
-            <h1>Cadastro de Categoria</h1>
-            <form @submit.prevent="cadastrarCategoria" class="form-container">
+            <h1>Editar Autor</h1>
+            <form @submit.prevent="atualizarAutor" class="form-container">
                 <div class="input-container top-aligned">
                     <label for="nome">Nome: </label>
-                    <input type="text" id="nome" v-model="categoria.nome" required class="input-field">
+                    <input type="text" id="nome" v-model="autor.nome" required class="input-field">
                 </div>
                 <div class="input-container top-aligned">
-                    <label for="descricao">Descrição: </label>
-                    <textarea id="descricao" v-model="categoria.descricao" required class="input-field-bio"></textarea>
+                    <label for="biografia">Biografia: </label>
+                    <textarea id="biografia" v-model="autor.biografia" required class="input-field-bio"></textarea>
                 </div>
-                <button type="submit" class="submit-button">Cadastrar</button>
+                <button type="submit" class="submit-button">Salvar</button>
             </form>
         </div>
     </div>
 </template>
   
 <script>
-import CategoriaModel from '@/models/CategoriaModel';
+import AutorModel from '@/models/AutorModel';
 import LogoComponent from '@/components/LogoComponent.vue';
-
 export default {
     components: {
         LogoComponent
     },
-    name: 'CadastrarCategoriaView',
+    name: 'EditarAutorView',
     data() {
         return {
-            categoria: {
+            autor: {
+                id: '',
                 nome: '',
-                descricao: ''
-            }
+                biografia: ''
+            }            
         };
     },
+    created() {
+        this.buscarAutor();
+    },
     methods: {
-        async cadastrarCategoria() {
+        async buscarAutor() {
             try {
-                var resposta = await new CategoriaModel().create(this.categoria);
-                if (resposta.status === 201) {
-                    alert('Categoria cadastrada com sucesso!');
-                    this.resetForm();
+                const id = this.$route.params.id;
+                const resposta = await new AutorModel().find(id);
+                this.autor = resposta.data;
+                console.log(this.autor);
+            } catch (error) {
+                console.error(error);
+                alert('Erro ao buscar autor.');
+            }
+        },
+        async atualizarAutor() {
+            console.log(this.autor);
+            try {
+                const id = this.$route.params.id;
+                const data = {
+                    id: this.autor.id,
+                    nome: this.autor.nome,
+                    biografia: this.autor.biografia
+                }
+                console.log(data);
+                const resposta = await new AutorModel().update(id, data);
+                if (resposta.status === 204) {
+                    alert('Autor atualizado com sucesso!');
+                    this.goBack();
+                } else {
+                    alert('Erro ao atualizar autor. Por favor, tente novamente mais tarde.');
                 }
             } catch (error) {
                 console.error(error);
-                alert('Ocorreu um erro durante o cadastro. Por favor, tente novamente mais tarde.');
+                alert('Ocorreu um erro durante a atualização. Por favor, tente novamente mais tarde.');
             }
         },
         goBack() {
             this.$router.go(-1);
-        },
-        resetForm() {
-            this.categoria.nome = '';
-            this.categoria.descricao = '';
         }
     }
 };
@@ -61,7 +81,6 @@ export default {
   
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap');
-
 .container {
     display: flex;
     flex-direction: column;
@@ -78,11 +97,9 @@ export default {
     flex-direction: column;
     align-items: center;
 }
-
 .input-container {
     margin-bottom: 20px;
 }
-
 .input-field {
     width: 490px;
     height: 40px;
@@ -97,7 +114,6 @@ export default {
     border-color: black;
     font-family: 'Open Sans', sans-serif;
 }
-
 .submit-button {
     width: 100px;
     height: 40px;

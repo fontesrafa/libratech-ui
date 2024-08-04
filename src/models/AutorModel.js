@@ -41,10 +41,10 @@ export default class AutorModel extends Model {
       data,
     })
   }
-  async update(data) {
+  async update(id,data) {
     return await this.request({
       method: "put",
-      url: `${this.resource()}`,
+      url: `${this.resource()}/${id}`,
       headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
       data,
     })

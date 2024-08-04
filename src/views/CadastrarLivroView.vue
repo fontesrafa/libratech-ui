@@ -1,5 +1,4 @@
 <template>
-  <button class="back-button" @click="goBack">🡠</button>
   <div class="container">
     <LogoComponent />
     <h1>Cadastro de Livros</h1>
@@ -159,7 +158,7 @@ export default {
   },
   methods: {
     enviarFormulario() {
-      alert(`Livro "${this.tituloLivro}" registrado com sucesso!`);
+      alert(`Cadastrando livro "${this.tituloLivro}. Aguarde..."`);
     },
     async buscarAutores() {
       try {
@@ -254,15 +253,21 @@ export default {
         };
 
         console.log('Data:', data);
-        await new LivroModel().create(data);
-        alert(`Livro "${this.tituloLivro}" registrado com sucesso!`);
-        this.resetForm();
+        var resposta = await new LivroModel().create(data);
+        if (resposta.status === 201) {
+          alert(`Livro "${this.tituloLivro}" registrado com sucesso!`, resposta.data);
+          this.resetForm();
+        }
+        
       } catch (error) {
         if (error.response) {
+          alert('Erro ao cadastrar livro. Verifique os campos e tente novamente.');
           console.error('Erro na resposta do servidor:', error.response.data);
         } else if (error.request) {
+          alert('Erro ao enviar solicitação. Tente novamente.');
           console.error('Nenhuma resposta recebida:', error.request);
         } else {
+          alert('Erro ao configurar solicitação. Tente novamente.');
           console.error('Erro na configuração da solicitação:', error.message);
         }
       }

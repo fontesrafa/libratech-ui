@@ -47,11 +47,11 @@ export default class CategoriaModel extends Model {
       }
     });
   }
-  async update(data) {
+  async update(id,data) {
     const token = localStorage.getItem('jwt');
     return await this.request({
       method: 'put',
-      url: `${this.resource()}`,
+      url: `${this.resource()}/${id}`,
       headers: {
         'Authorization': `Bearer ${token}`
       },

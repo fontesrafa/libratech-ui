@@ -2,6 +2,7 @@
   <div class="content">
     <LogoComponent/>
     <BarraPesquisa :query="query" :pesquisar="fetchLivros" />
+    <div v-if="livros.length === 0">Nenhum livro encontrado</div>
     <LivroItem v-for="livro in livros" :key="livro.id" :id="livro.id" :titulo="livro.titulo"
       :quantidade="livro.quantidade" :autores="livro.autores" :categorias="livro.categorias" :descricao="livro.descricao"
       :assunto="livro.assunto" :editora="livro.editora" :edicoes="livro.edicoes" :imagemURL="livro.imagemURL" 
@@ -48,9 +49,12 @@ export default {
   methods: {
     async fetchLivros() {
       try {
-        console.log('Query:', this.query);
-        console.log(this.livros);
         const response = await new LivroModel().search(this.query, this.currentPage, this.itemsPerPage);
+        console.log(response);
+        if(response.status === 404 && this.currentPage == 1) {
+          console.log('Nenhum livro encontrado');
+          alert('Nenhum livro encontrado');
+        }
         this.livros = response.data;
         this.hasMorePages = response.data.length === this.itemsPerPage;
         console.log('Livros carregados:', this.livros);

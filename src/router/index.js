@@ -9,6 +9,16 @@ import CadastrarCategoriaView from '../views/CadastrarCategoriaView.vue';
 import CadastrarEditoraView from '../views/CadastrarEditoraView.vue';
 import CadastrarLivroView from '../views/CadastrarLivroView.vue';
 import LoginView from '../views/LoginView.vue';
+import GerenciarView from '../views/GerenciarView.vue';
+import EditarLivroView from '../views/EditarLivroView.vue';
+import GerenciarLivroListView from '../views/GerenciarLivroListView.vue';
+import GerenciarAutorListView from '../views/GerenciarAutorListView.vue';
+import EditarAutorView from '../views/EditarAutorView.vue';
+import GerenciarCategoriaListView from '../views/GerenciarCategoriaListView.vue';
+import EditarCategoriaView from '../views/EditarCategoriaView.vue';
+import GerenciarEditoraListView from '../views/GerenciarEditoraListView.vue';
+import EditarEditoraView from '../views/EditarEditoraView.vue';
+import GerenciarExemplarListView from '@/views/GerenciarExemplarListView.vue';
 
 const routes = [
   {
@@ -71,7 +81,72 @@ const routes = [
     name: 'CadastrarEditora',
     component: CadastrarEditoraView,
     meta: { requiresAuth: true }
-  }
+  },
+  {
+    path: '/gerenciar',
+    name: 'Gerenciar',
+    component: GerenciarView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/editar-livro/:id',
+    name: 'EditarLivro',
+    component: EditarLivroView,
+    props: true,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/gerenciar-livro/',
+    name: 'GerenciarLivroList',
+    component: GerenciarLivroListView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/gerenciar-exemplar/',
+    name: 'GerenciarExemplarList',
+    component: GerenciarExemplarListView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/gerenciar-autor/',
+    name: 'GerenciarAutorList',
+    component: GerenciarAutorListView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/editar-autor/:id',
+    name: 'EditarAutor',
+    component: EditarAutorView,
+    props: true,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/gerenciar-categoria',
+    name: 'GerenciarCategoriaList',
+    component: GerenciarCategoriaListView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/editar-categoria/:id',
+    name: 'EditarCategoria',
+    component: EditarCategoriaView,
+    props: true,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/gerenciar-editora',
+    name: 'GerenciarEditoraList',
+    component: GerenciarEditoraListView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/editar-editora/:id',
+    name: 'EditarEditora',
+    component: EditarEditoraView,
+    props: true,
+    meta: { requiresAuth: true }
+  },
+
 ];
 
 const router = createRouter({

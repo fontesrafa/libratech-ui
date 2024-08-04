@@ -1,5 +1,4 @@
 <template>
-    <button class="back-button" @click="goBack">🡠</button>
     <div class="container">
         <LogoComponent/>
         <div class="content">
@@ -43,8 +42,11 @@ export default {
     methods: {
         async cadastrarEditora() {
             try {
-                await new EditoraModel().create(this.editora);
-                this.$router.push({ name: 'Cadastrar' });
+                var resposta = await new EditoraModel().create(this.editora);
+                if (resposta.status === 201) {
+                    alert('Editora cadastrada com sucesso!');
+                    this.resetForm();
+                }
             } catch (error) {
                 console.error(error);
                 alert('Ocorreu um erro durante o cadastro. Por favor, tente novamente mais tarde.');
@@ -52,6 +54,11 @@ export default {
         },
         goBack() {
             this.$router.go(-1);
+        },
+        resetForm() {
+            this.editora.nome = '';
+            this.editora.endereco = '';
+            this.editora.telefone = '';
         }
     }
 };

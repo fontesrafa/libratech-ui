@@ -1,5 +1,4 @@
 <template>
-    <button class="back-button" @click="goBack">🡠</button>
     <div class="container">
         <LogoComponent/>
         <div class="content">
@@ -39,8 +38,12 @@ export default {
     methods: {
         async cadastrarAutor() {
             try {
-                await new AutorModel().create(this.autor);
+                var resposta = await new AutorModel().create(this.autor);
+                if (resposta.status === 201) {
+                    alert('Autor cadastrado com sucesso!');
+                    this.resetForm();
                 this.$router.push({ name: 'Cadastrar' });
+                }
             } catch (error) {
                 console.error(error);
                 alert('Ocorreu um erro durante o cadastro. Por favor, tente novamente mais tarde.');
@@ -48,6 +51,10 @@ export default {
         },
         goBack() {
             this.$router.go(-1);
+        },
+        resetForm() {
+            this.autor.nome = '';
+            this.autor.biografia = '';
         }
     }
 };

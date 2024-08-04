@@ -1,6 +1,5 @@
 <template>
   <div class="livro-detalhes-container">
-    <button class="back-button" @click="goBack">🡠</button>
     <div class="content" v-if="livro">
       <div class="container-livro-detalhes">
         <div class="livro-imagem-box">
@@ -16,7 +15,18 @@
               <span v-if="!$last">&nbsp;</span>
             </div>
           </div>
-          <h1>{{ livro.editora }}</h1>
+          <div class="paginas-div">
+            <div>Paginas: {{ livro.paginas }}</div>
+            <span>&nbsp;</span>
+          </div>
+          <div class="editora-div">
+            <div>Editora: {{ livro.editora.nome }}</div>
+            <span>&nbsp;</span>
+          </div>
+          <div class="assunto-div">
+            <div>Assunto: {{ livro.assunto }}</div>
+            <span>&nbsp;</span>
+          </div>
           <div class="categorias-div">
             <div>Categoria(s):</div>
             <div v-for="categoria in livro.categorias" :key="categoria.id">
@@ -24,10 +34,11 @@
               <span>&nbsp;</span>
             </div>
           </div>
+
         </div>
         <div class="container-buttons">
           <div class="info-disponibilidade">
-            <h1>Exemplares: {{ livro.quantidade }}</h1>
+            <h1>Exemplares: {{ livro.exemplares.length }}</h1>
             <h1>Disponiveis: {{ disponiveis }}</h1>
           </div>
         </div>
@@ -45,8 +56,12 @@
       <div v-if="conteudoAtual === 'descricao'" class="livro-descricao">
         <h1>{{ livro.descricao }}</h1>
       </div>
-      <ExemplarList v-if="conteudoAtual === 'exemplares'" :livroId="livro.id" @exemplares-atualizados="atualizarDisponiveis" />
+      <ExemplarList v-if="conteudoAtual === 'exemplares'" :livroId="livro.id"
+        @exemplares-atualizados="atualizarDisponiveis" />
 
+    </div>
+    <div v-else-if="erro">
+      <p>{{ erro }}</p>
     </div>
     <div v-else>
       <p>Carregando dados do livro...</p>
@@ -76,7 +91,7 @@ export default {
   async created() {
     await this.obterLivroPorId(this.id);
     await this.searchByLivroId(this.id);
-     this.atualizarDisponiveis();
+    this.atualizarDisponiveis();
   },
   methods: {
     async obterLivroPorId(id) {
@@ -84,7 +99,12 @@ export default {
         const response = await new LivroModel().find(id);
         this.livro = response.data;
       } catch (error) {
-        console.error("Erro ao obter livro por ID:", error);
+        if (error.response && error.response.status === 404) {
+          this.erro = "Livro não encontrado";
+        } else {
+          this.erro = "Erro ao obter livro por ID: " + error.message;
+        }
+        console.error(this.erro, error);
       }
     },
     async searchByLivroId(id) {
@@ -110,7 +130,7 @@ export default {
   computed: {
     quantidadeDisponiveis() {
       if (this.livro && this.livro.exemplares) {
-        return this.livro.exemplares.filter(exemplar => 
+        return this.livro.exemplares.filter(exemplar =>
           !exemplar.reservas.some(reserva => reserva.statusDescricao === "EM_ABERTO") &&
           !exemplar.emprestimos.some(emprestimo => emprestimo.statusDescricao === "EM_ANDAMENTO")
         ).length;
@@ -133,6 +153,7 @@ export default {
   height: 100%;
   background-color: rgba(45, 147, 255, 0.1);
 }
+
 .content {
   display: flex;
   flex-direction: column;
