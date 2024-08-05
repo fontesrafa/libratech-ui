@@ -19,6 +19,8 @@ import EditarCategoriaView from '../views/EditarCategoriaView.vue';
 import GerenciarEditoraListView from '../views/GerenciarEditoraListView.vue';
 import EditarEditoraView from '../views/EditarEditoraView.vue';
 import GerenciarExemplarListView from '@/views/GerenciarExemplarListView.vue';
+import GerenciarUsuarioListView from '@/views/GerenciarUsuarioListView.vue';
+import EditarUsuarioView from '@/views/EditarUsuarioView.vue';
 
 const routes = [
   {
@@ -146,6 +148,19 @@ const routes = [
     props: true,
     meta: { requiresAuth: true }
   },
+  {
+    path: '/gerenciar-usuarios',
+    name: 'GerenciarUsuarios',
+    component: GerenciarUsuarioListView,
+    meta: { requiresAuth: true },
+},
+{
+    path: '/editar-usuario/:id',
+    name: 'EditarUsuario',
+    component: EditarUsuarioView,
+    props: true,
+    meta: { requiresAuth: true }
+}
 
 ];
 

@@ -37,6 +37,31 @@ export default {
             if (buttonName === 'EMPRESTAR RESERVAR') {
                 this.$router.push({ name: 'livro-search', query: { query: '' } });
             }
+            if (buttonName === 'DEVOLVER') {
+                // this.$router.push({ name: 'devolver' });
+                alert("Funcionalidade em desenvolvimento");
+            }
+            if (buttonName === 'RESETAR SENHA') {
+                // this.$router.push({ name: 'resetar-senha' });
+                alert("Funcionalidade em desenvolvimento");
+            }
+            if (buttonName === 'DEVOLUÇÕES ATRASADAS') {
+                // this.$router.push({ name: 'devolucoes-atrasadas' });
+                alert("Funcionalidade em desenvolvimento");
+            }
+            if (buttonName === 'RELATÓRIOS') {
+                // this.$router.push({ name: 'relatorios' });
+                alert("Funcionalidade em desenvolvimento");
+            }
+            if (buttonName === 'FINANCEIRO') {
+                // this.$router.push({ name: 'financeiro' });
+                alert("Funcionalidade em desenvolvimento");
+            }
+            if (buttonName === 'MENSAGENS') {
+                // this.$router.push({ name: 'mensagens' });
+                alert("Funcionalidade em desenvolvimento");
+            }
+
         },
         goHome() {
             this.$router.push({ name: 'home' });

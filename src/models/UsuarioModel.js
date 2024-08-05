@@ -65,4 +65,15 @@ export default class UsuarioModel extends Model {
       }
     });
   }
+
+  async delete(id) {
+    const token = localStorage.getItem('jwt');
+    return await this.request({
+      method: 'delete',
+      url: `${this.resource()}/${id}`,
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
 }

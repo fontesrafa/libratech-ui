@@ -39,6 +39,10 @@ export default {
             if (buttonName === 'EDITORA') {
                 this.$router.push({ name: 'CadastrarEditora' });
             }
+            if (buttonName === 'ESTANTE') {
+                // this.$router.push({ name: 'CadastrarEstante' });
+                alert("Funcionalidade em desenvolvimento");
+            }
         },
         goBack() {
             this.$router.go(-1);

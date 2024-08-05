@@ -9,7 +9,7 @@ export default class Model extends BaseModel {
 
   baseURL() {
      //const url = "https://localhost:7171";
-    const url = "https://libratech-g5fachevhpfjcred.eastus-01.azurewebsites.net/";
+     const url = "https://libratech-g5fachevhpfjcred.eastus-01.azurewebsites.net/";
     try {
       new URL(url);
     } catch (_) {

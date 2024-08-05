@@ -25,7 +25,7 @@ export default {
     methods: {
         navigate(buttonName) {
             if (buttonName === 'USUARIO') {
-                this.$router.push({ name: 'CadastrarUsuario' });
+                this.$router.push({ name: 'GerenciarUsuarios' });
             }
             if (buttonName === 'AUTOR') {
                 this.$router.push({ name: 'GerenciarAutorList' });
@@ -41,15 +41,18 @@ export default {
             }
             if (buttonName === 'EMPRESTIMOS') {
                 // this.$router.push({ name: 'Emprestimos' });
+                alert("Funcionalidade em desenvolvimento");
             }
             if (buttonName === 'RESERVAS') {
                 // this.$router.push({ name: 'Reservas' });
+                alert("Funcionalidade em desenvolvimento");
             }
             if (buttonName === 'EXEMPLARES') {
                 this.$router.push({ name: 'GerenciarExemplarList' });
             }
             if (buttonName === 'ESTANTE') {
                 // this.$router.push({ name: 'Estante' });
+                alert("Funcionalidade em desenvolvimento");
             }
         },
         goBack() {

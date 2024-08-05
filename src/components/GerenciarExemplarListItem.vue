@@ -40,7 +40,8 @@ export default {
     },
     methods: {
         editExemplar() {
-            this.$emit('edit', this.exemplar);
+            // this.$emit('edit', this.exemplar);
+            alert("Funcionalidade em desenvolvimento");
         },
         async deleteExemplar() {
             if (confirm('Você tem certeza que deseja deletar este exemplar?')) {
